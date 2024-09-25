@@ -19,9 +19,10 @@ export const Registro = () => {
 
         // Obtener los datos del formulario
         let newUser = form;
+        console.log("dddd", JSON.stringify(newUser));
 
         // Petición a la API del Backend para guardar usuario en la BD
-        const request = await fetch(Global.url + "user/register", {
+        const request = await fetch(Global.url + "Evaluados/Register", {
             method: "POST",
             body: JSON.stringify(newUser),
             headers: {
@@ -31,9 +32,10 @@ export const Registro = () => {
 
         // Obtener la información retornada por la request
         const data = await request.json();
+        console.log("respuesta", data);
 
         // Verificar si el estado de la respuesta del backend es "created" seteamos la variable saved con "saved" y si no, le asignamos "error", esto es para mostrar por pantalla el resultado del registro del usuario
-        if (request.status === 201 && data.status === "created") {
+        if (request.status === 200 && data.status === "success") {
             setSaved("saved");
 
             // Mostrar modal de éxito
@@ -82,13 +84,15 @@ export const Registro = () => {
                                             <div className="d-flex flex-row align-items-center mb-4">
                                                 <i className="fas fa-user fa-lg me-3 fa-fw"></i>
                                                 <div data-mdb-input-init className="form-outline flex-fill mb-0">
-                                                    <label className="form-label" htmlFor="documentoIdentidad"  >Documento Identificación:</label>
+                                                    <label className="form-label" htmlFor="numero_identificacion"  >Documento Identificación:</label>
                                                     <input type="text"
-                                                        id="documentoIdentidad"
+                                                        id="numero_identificacion"
+                                                        name="numero_identificacion"
                                                         className="form-control"
+                                                        required
                                                         onChange={changed}
-                                                        value={form.documentoIdentidad || ""}
-                                                        autoComplete="" />
+                                                        value={form.numero_identificacion || ""}
+                                                    />
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-row align-items-center mb-4">
@@ -96,10 +100,12 @@ export const Registro = () => {
                                                 <div data-mdb-input-init className="form-outline flex-fill mb-0">
                                                     <label className="form-label" htmlFor="nombres" >Nombres:</label>
                                                     <input type="text"
-                                                        id="nombres"
+                                                        id="nombre"
+                                                        name="nombre"
+                                                        required
                                                         className="form-control"
                                                         onChange={changed}
-                                                        value={form.nombres || ""}
+                                                        value={form.nombre || ""}
                                                         autoComplete="given-name" />
                                                 </div>
                                             </div>
@@ -109,6 +115,8 @@ export const Registro = () => {
                                                     <label className="form-label" htmlFor="nombres"  >Apellidos:</label>
                                                     <input type="text"
                                                         id="apellidos"
+                                                        name="apellidos"
+                                                        required
                                                         className="form-control"
                                                         onChange={changed}
                                                         value={form.apellidos || ""}
@@ -119,8 +127,11 @@ export const Registro = () => {
                                                 <i className="fas fa-user fa-lg me-3 fa-fw"></i>
                                                 <div data-mdb-input-init className="form-outline flex-fill mb-0">
                                                     <label className="form-label" htmlFor="cargo" >Cargo:</label>
-                                                    <input type="text" id="cargo"
+                                                    <input type="text"
+                                                        id="cargo"
+                                                        name="cargo"
                                                         className="form-control"
+                                                        required
                                                         onChange={changed}
                                                         value={form.cargo || ""}
                                                         autoComplete="" />
@@ -129,11 +140,16 @@ export const Registro = () => {
                                             <div className="d-flex flex-row align-items-center mb-4">
                                                 <i className="fas fa-user fa-lg me-3 fa-fw"></i>
                                                 <div data-mdb-input-init className="form-outline flex-fill mb-0">
-                                                    <input type="text" id="ciudad" className="form-control"
+                                                    <label className="form-label" htmlFor="ciudad" >Ciudad:</label>
+                                                    <input type="text"
+                                                        id="ciudad"
+                                                        name="ciudad"
+                                                        className="form-control"
+                                                        required
                                                         onChange={changed}
                                                         value={form.ciudad || ""}
                                                         autoComplete="" />
-                                                    <label className="form-label" >Ciudad:</label>
+
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-row align-items-center mb-4">
@@ -142,6 +158,8 @@ export const Registro = () => {
                                                     <label className="form-label" htmlFor="correo">Correo</label>
                                                     <input type="email"
                                                         id="correo"
+                                                        name="correo"
+                                                        required
                                                         className="form-control"
                                                         onChange={changed}
                                                         value={form.correo || ""}
@@ -149,9 +167,8 @@ export const Registro = () => {
                                                 </div>
                                             </div>
                                             <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                                                <button
-                                                    type="button" data-mdb-button-init data-mdb-ripple-init
-                                                    className="btn btn-primary btn-lg">Registrar</button>
+                                                <input type="submit" data-mdb-button-init data-mdb-ripple-init
+                                                    className="btn btn-primary btn-lg" value="Registrar" />
                                             </div>
 
                                         </form>
