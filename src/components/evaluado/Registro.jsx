@@ -4,10 +4,12 @@ import { useForm } from "../../hooks/setForm";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Swal from "sweetalert2"; 
-
+import useAuth from "../../hooks/useAuth";
 
 export const Registro = () => {
     const { form, changed } = useForm({});
+    const { setAuth } = useAuth();
+
     // Estado para mostrar resultado del registro del user
     const [saved, setSaved] = useState("not sended");
     // Hook para redirigir
@@ -19,7 +21,6 @@ export const Registro = () => {
 
         // Obtener los datos del formulario
         let newUser = form;
-        console.log("dddd", JSON.stringify(newUser));
 
         // Petición a la API del Backend para guardar usuario en la BD
         const request = await fetch(Global.url + "Evaluados/Register", {
@@ -32,21 +33,18 @@ export const Registro = () => {
 
         // Obtener la información retornada por la request
         const data = await request.json();
-        console.log("respuesta", data);
 
         // Verificar si el estado de la respuesta del backend es "created" seteamos la variable saved con "saved" y si no, le asignamos "error", esto es para mostrar por pantalla el resultado del registro del usuario
         if (request.status === 200 && data.status === "success") {
             setSaved("saved");
 
-            // Mostrar modal de éxito
-            Swal.fire({
-                title: data.message,
-                icon: "success",
-                confirmButtonText: "Continuar",
-            }).then(() => {
-                // Redirigir después de cerrar el modal
-                navigate("/login");
-            });
+            // Guardar los datos del token y usuario en el localstorage del navegador
+            localStorage.setItem("tokenEvaluado", data.token);
+            localStorage.setItem("evaluado", JSON.stringify(data.evaluado));
+            setAuth(data.evaluado);
+
+            navigate("/examenes");
+
         } else {
             setSaved("error");
 
@@ -82,7 +80,6 @@ export const Registro = () => {
 
                                         <form className="mx-1 mx-md-4" onSubmit={saveUser}>
                                             <div className="d-flex flex-row align-items-center mb-4">
-                                                <i className="fas fa-user fa-lg me-3 fa-fw"></i>
                                                 <div data-mdb-input-init className="form-outline flex-fill mb-0">
                                                     <label className="form-label" htmlFor="numero_identificacion"  >Documento Identificación:</label>
                                                     <input type="text"
@@ -96,7 +93,6 @@ export const Registro = () => {
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-row align-items-center mb-4">
-                                                <i className="fas fa-user fa-lg me-3 fa-fw"></i>
                                                 <div data-mdb-input-init className="form-outline flex-fill mb-0">
                                                     <label className="form-label" htmlFor="nombres" >Nombres:</label>
                                                     <input type="text"
@@ -110,7 +106,6 @@ export const Registro = () => {
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-row align-items-center mb-4">
-                                                <i className="fas fa-user fa-lg me-3 fa-fw"></i>
                                                 <div data-mdb-input-init className="form-outline flex-fill mb-0">
                                                     <label className="form-label" htmlFor="nombres"  >Apellidos:</label>
                                                     <input type="text"
@@ -124,7 +119,6 @@ export const Registro = () => {
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-row align-items-center mb-4">
-                                                <i className="fas fa-user fa-lg me-3 fa-fw"></i>
                                                 <div data-mdb-input-init className="form-outline flex-fill mb-0">
                                                     <label className="form-label" htmlFor="cargo" >Cargo:</label>
                                                     <input type="text"
@@ -138,7 +132,6 @@ export const Registro = () => {
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-row align-items-center mb-4">
-                                                <i className="fas fa-user fa-lg me-3 fa-fw"></i>
                                                 <div data-mdb-input-init className="form-outline flex-fill mb-0">
                                                     <label className="form-label" htmlFor="ciudad" >Ciudad:</label>
                                                     <input type="text"
@@ -153,7 +146,6 @@ export const Registro = () => {
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-row align-items-center mb-4">
-                                                <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
                                                 <div data-mdb-input-init className="form-outline flex-fill mb-0">
                                                     <label className="form-label" htmlFor="correo">Correo</label>
                                                     <input type="email"

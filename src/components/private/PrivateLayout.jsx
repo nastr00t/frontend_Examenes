@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom"
 import HeaderMenuBar from "../public/HeaderMenuBar"
 
-export const PublicLayout = () => {
+export const PrivateLayout = () => {
     return (
         <>
             <HeaderMenuBar />
