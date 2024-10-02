@@ -42,7 +42,7 @@ const Login = () => {
                 // Guardar los datos del token y usuario en el localstorage
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("usuario", JSON.stringify(data.usuario));
-                setAuth(data.evaluado);
+                setAuth(data.usuario);
 
                 // Navegar a la página de inicio
                 navigate("/admin/examenes");

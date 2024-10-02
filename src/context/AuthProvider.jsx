@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
   const authUser = async () => {
     // Obtener datos del usuario identificado del localstorage
     const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user");
+    const user = JSON.parse(localStorage.getItem("usuario"));
 
     // Comprobar si tengo el token y el user
     if (!token || !user) {
@@ -35,6 +35,9 @@ export const AuthProvider = ({ children }) => {
 
     // Setear el estado de loading
     setLoading(false);
+    // Setear el estado de Auth
+    setAuth(user);
+
   }
 
   // Renderizar el proveedor de contexto con el contexto AuthContext.Provider

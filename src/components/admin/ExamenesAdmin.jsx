@@ -1,102 +1,89 @@
-import { useEffect, useState } from "react";
-import { Global } from "../../helpers/Global";
-import useAuth from "../../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
 
-
+import { useState, useEffect } from "react";
+import { Global } from "../../helpers/Global"; // Ajusta la ruta si es necesario
+import { Link } from "react-router-dom";
 const ExamenesAdmin = () => {
-    // Variable para almacenar el token para las peticiones a realizar en este componente
-    const token = localStorage.getItem("tokenEvaluado");
-    const navigate = useNavigate();
-    const { auth } = useAuth();
-
-    useEffect(() => {
-        getExamenes();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     const [examenes, setExamenes] = useState([]);
+    const [error, setError] = useState(""); // Para manejar errores
+    const [loading, setLoading] = useState(true); // Estado de carga
+    const token = localStorage.getItem("token");
 
-
-    const getExamenes = async () => {
-        try {
-            const response = await fetch(`${Global.url}Examenes/VerExamenes`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + token
+    // Obtener los exámenes desde el backend
+    useEffect(() => {
+        const getExamenes = async () => {
+            try {
+                const response = await fetch(`${Global.url}Examenes/VerExamenes`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    }
+                });
+                const data = await response.json();
+                if (response.ok && data.status === "success") {
+                    setExamenes(data.examenes); // Suponiendo que el array de exámenes viene en "examenes"
+                } else {
+                    setError("No se pudieron cargar los exámenes.");
                 }
-            });
-            // Obtener la información retornada por la request
-            const data = await response.json();
-            // Usar la variable de estado para asignar el array de usuarios que sigues recibido. Si la petición es exitosa, actualiza los usuarios
-            if (data && data.status === "success") {
-                setExamenes(data.examenes);
+            } catch (error) {
+                console.error("Error al obtener los exámenes:", error);
+                setError("Error al conectarse con el servidor.");
+            } finally {
+                setLoading(false); // Finaliza la carga
             }
-        } catch (error) {
-            console.error("Error en la petición al backend:", error);
-        }
+        };
+
+        getExamenes();
+    }, [token]);
+
+    if (loading) {
+        return <div className="text-center mt-5">Cargando exámenes...</div>;
     }
 
-    const getPrueba = async (id) => {
-        try {
-            console.log(JSON.stringify({ idExamen: id }));
-
-            const response = await fetch(`${Global.url}Evaluados/`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + token
-                },
-            });
-
-            // Obtener la información retornada por la request
-            const data = await response.json();
-            console.log(data);
-
-            // Usar la variable de estado para asignar el array de usuarios que sigues recibido. Si la petición es exitosa, actualiza los usuarios
-            if (data && data.status === "success") {
-                // Filtrar usuarios para excluir al usuario autenticado
- 
-                navigate("/admin/evaluados");
-            }
-        } catch (error) {
-            console.error("Error en la petición al backend:", error);
-        }
+    if (error) {
+        return <div className="alert alert-danger text-center">{error}</div>;
     }
 
     return (
-        <div className="card w-90 mb-3 m-5">
-            <h5 className="card-title">Hola {auth.nombre}</h5>
-            <div className="card-body">
-                <h5 className="card-title">Examenes disponibles</h5>
-                <table className="table">
+        <div className="container mt-5">
+            <h2 className="text-center mb-4">Listado de Exámenes</h2>
+
+            {examenes.length === 0 ? (
+                <div className="alert alert-info text-center">No hay exámenes disponibles.</div>
+            ) : (
+                <table className="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Exámen</th>
-                            <th scope="col">Preguntas</th>
-                            <th scope="col"></th>
+                                <th>ID</th>
+                                <th>Título</th>
+                                <th>Descripción</th>
+                                <th>Fecha Límite</th>
+                                <th>Cantidad de Preguntas</th>
+                                <th>Estado</th>
+                                <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {examenes.map((examen) => {
-                            return (
+                            {examenes.map((examen) => (
                                 <tr key={examen.id_examen}>
-                                    <th scope="row">{examen.id_examen}</th>
-                                    <td>{examen.titulo}</td>
-                                    <td>{examen.cantidad_preguntas}</td>
-                                    <td> <button className="btn btn-primary" onClick={() => getPrueba(examen.id_examen)}><i className="fa fa-eye">Evaluados </i></button></td>
-                                </tr>
-                            );
-                        })}
+                                <td>{examen.id_examen}</td>
+                                <td>{examen.titulo}</td>
+                                <td>{examen.descripcion}</td>
+                                <td>{new Date(examen.fecha_limite).toLocaleDateString()}</td>
+                                <td>{examen.cantidad_preguntas}</td>
+                                <td>{examen.estado ? "Activo" : "Inactivo"}</td>
+                                <td>
+                                    <Link to={`/admin/evaluados`} className="btn btn-warning me-2">
+                                        Evaluados
+                                    </Link>
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
-            </div>
+            )}
         </div>
-    )
-}
+    );
+};
 
-ExamenesAdmin.propTypes = {}
-
-export default ExamenesAdmin
+export default ExamenesAdmin;

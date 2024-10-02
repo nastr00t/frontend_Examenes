@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import useAuth from "../../hooks/useAuth";
 import { useEffect, useState } from "react";
 import { Global } from "../../helpers/Global";
@@ -147,7 +148,7 @@ export const VerExamen = () => {
                                     required
                                 />
                                 <label className="form-check-label" htmlFor={respuesta.id_respuesta}>
-                                    {<UnsafeComponent html={respuesta.texto_respuesta} />} {respuesta.id_respuesta_intento}
+                                    {<UnsafeComponent html={respuesta.texto_respuesta} />} 
                                 </label>
                             </li>
                         ))}
@@ -166,3 +167,4 @@ export const VerExamen = () => {
         </div>
     );
 };
+VerExamen.propTypes = { html: PropTypes.string }
