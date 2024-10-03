@@ -35,7 +35,7 @@ const Login = () => {
 
             // Obtener la información retornada por la request
             const data = await response.json();
-            console.log(data);
+            //console.log(data);
 
             // Verificar si el estado de la respuesta es correcto
             if (response.status === 200 && data.status === "success") {
