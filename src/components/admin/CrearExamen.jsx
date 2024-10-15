@@ -58,7 +58,7 @@ const CrearExamen = () => {
             if (response.status === 201 || data.status === "success") {
                 setSuccess("Examen creado con éxito.");
                 // Redireccionar o limpiar el formulario después de la creación
-                navigate("/examenes"); // Ajusta la ruta a la página de exámenes si es necesario
+                navigate("/admin/examenes"); // Ajusta la ruta a la página de exámenes si es necesario
             } else {
                 setError("Ocurrió un error al crear el examen.");
             }

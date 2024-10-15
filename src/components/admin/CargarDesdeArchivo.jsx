@@ -34,10 +34,10 @@ const CargarDesdeArchivo = () => {
             const data = await response.json();
 
             if (response.ok && data.status === 'success') {
-                setSuccess('Foto subida exitosamente.');
+                setSuccess('Preguntas cargadas exitosamente.');
                 setError(null);
             } else {
-                setError('Hubo un error al subir la foto.');
+                setError('Hubo un error al subir los archivos.');
             }
         } catch (err) {
             console.log(err);
@@ -59,7 +59,7 @@ const CargarDesdeArchivo = () => {
                         type="file"
                         className="form-control"
                         id="file"
-                        accept=".json"
+                        accept=".xlsx"
                         onChange={handleFileChange}
                         required
                     />
